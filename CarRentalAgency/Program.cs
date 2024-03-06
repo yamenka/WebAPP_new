@@ -9,15 +9,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-// builder.Services.AddDbContext<CarRentalContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("CarRentalContext") ?? throw new InvalidOperationException("Connection string 'SchoolContext' not found.")));
+builder.Services.AddDbContext<CarRentalContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Connection") ?? throw new InvalidOperationException("Connection string 'SchoolContext' not found.")));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-builder.Services.AddDbContext<CarRentalContext>(options =>options.UseSqlite(builder.Configuration.GetConnectionString("Connection")));
+// builder.Services.AddDbContext<CarRentalContext>(options =>options.UseSqlite(builder.Configuration.GetConnectionString("Connection")));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<CarRentalContext>().AddDefaultTokenProviders();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<EmailService>();
