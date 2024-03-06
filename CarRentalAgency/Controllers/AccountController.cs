@@ -57,7 +57,7 @@ namespace CarRentalAgency.Controllers
 
                 // Send the verification email
                 var emailSubject = "Email Verification";
-                var emailBody = $"Please verify your email by clicking the following link: {verificationLink}";
+                var emailBody = $"Please verify uor email from this link if you registered to our car rental agency: {verificationLink}";
                 _emailService.SendEmail(user.Email, emailSubject, emailBody);
                 await _userManager.AddToRoleAsync(user, "User");
 
