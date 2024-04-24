@@ -43,14 +43,21 @@ namespace CarRentalAgency.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Client>> GetClient(int id)
         {
-            var client = await _context.Clients.FindAsync(id);
-
+            var client = await _context.Clients
+                .Where(c => c.ClientId == id)
+                .Select(c => new 
+                {
+                    c.ClientId,
+                    c.firstName,
+                    c.Transactions
+                })
+                .FirstOrDefaultAsync();
             if (client == null)
             {
                 return NotFound();
             }
 
-            return client;
+            return  Ok(client);
         }
 
         // PUT: api/Client/5
