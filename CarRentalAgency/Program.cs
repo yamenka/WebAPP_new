@@ -7,6 +7,14 @@ using CarRentalAgency.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using CarRentalAgency.Models; // Assuming this is your DbContext and other related classes
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text; 
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CarRentalContext>(options =>
@@ -22,6 +30,15 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkSto
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<RolesController>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        policy => policy.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
+
+
 
             builder.Services.AddAuthentication(options =>
             {
@@ -50,6 +67,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.MapControllers();
+app.UseCors("AllowReactApp"); // Apply CORS policy before other middleware that might write to the response.
+
 app.UseHttpsRedirection();
 
 var summaries = new[]
@@ -71,7 +90,6 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast")
 .WithOpenApi();
-
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
